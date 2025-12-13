@@ -1,37 +1,42 @@
 /* src/index.css */
 :root {
-  /* Palette Black & Glassy Purple */
-  --bg-main: #000000;
-  --bg-glass: rgba(20, 20, 25, 0.6);
-  --bg-glass-heavy: rgba(10, 10, 12, 0.85);
+  /* --- Apple Corporate Dark Minimalist Palette --- */
   
-  --accent-purple: #8b5cf6;
-  --accent-purple-glow: rgba(139, 92, 246, 0.5);
-  --accent-gradient: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  /* Backgrounds: Deep, neutral grays for layering */
+  --bg-main: #000000; /* Pure black background */
+  --bg-glass: rgba(28, 28, 30, 0.75); /* Neutral dark gray glass */
+  --bg-glass-heavy: rgba(44, 44, 46, 0.9); /* Slightly lighter gray for contrast */
   
+  /* Accent: Single solid color, muted and elegant (inspired by cool tones in reference image) */
+  --accent-solid: #4A5568; /* A deep, sophisticated slate indigo */
+  --accent-hover: #576379; /* Slightly lighter for hover states */
+  
+  /* Text: High contrast white and subtle gray */
   --text-main: #ffffff;
-  --text-muted: #a1a1aa;
+  --text-muted: #8e8e93; /* Apple's standard muted gray */
   
-  --border-glass: 1px solid rgba(139, 92, 246, 0.2);
-  --border-active: 1px solid rgba(139, 92, 246, 0.6);
+  /* Borders: Very subtle, neutral gray thin borders */
+  --border-glass: 1px solid rgba(255, 255, 255, 0.1);
+  --border-active: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif; /* Prioritize Apple font */
   background-color: var(--bg-main);
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 40%);
+  /* GRADIENTS REMOVED */
   color: var(--text-main);
   
-  /* UBAH DI SINI: */
-  min-height: 100vh; /* Gunakan min-height agar bisa memanjang */
-  overflow-y: auto;  /* Izinkan scroll vertikal */
-  /* Hapus atau remark baris: height: 100vh; dan overflow: hidden; */
+  /* Keep layout settings as requested */
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
-/* Scrollbar Custom */
+/* Scrollbar Custom - Minimalist Dark */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -39,74 +44,92 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: rgba(255, 255, 255, 0.2); /* Subtle gray thumb */
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-purple);
+  background: rgba(255, 255, 255, 0.3);
 }
 
-/* Utility Classes for Glassmorphism */
+/* Utility Classes for Minimalist Glassmorphism */
 .glass-panel {
   background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px); /* Stronger blur for more premium feel */
+  -webkit-backdrop-filter: blur(20px);
   border: var(--border-glass);
+  /* Optional: Subtle inner shadow for depth without gradients */
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
 }
 
 .input-glass {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08); /* Slightly more opaque, neutral */
   border: var(--border-glass);
   color: white;
   padding: 12px 16px;
-  border-radius: 12px;
+  border-radius: 10px; /* Slightly tighter radius */
   width: 100%;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   outline: none;
+  font-size: 14px;
 }
 
 .input-glass:focus {
-  border-color: var(--accent-purple);
-  box-shadow: 0 0 15px var(--accent-purple-glow);
-  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-solid);
+  background: rgba(255, 255, 255, 0.12);
+  /* GLOW REMOVED - Replaced with subtle neutral shadow */
+  box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.3);
 }
 
+.input-glass::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Solid, Flat Buttons */
 .btn-primary {
-  background: var(--accent-gradient);
+  background: var(--accent-solid); /* SOLID COLOR, NO GRADIENT */
   border: none;
   color: white;
   padding: 10px 20px;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 600;
-  transition: transform 0.2s, box-shadow 0.2s;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px var(--accent-purple-glow);
+  background-color: var(--accent-hover);
+  /* HOVER GLOW/SHADOW REMOVED for flat look */
+  transform: none; /* Remove movement on hover for stricter corporate feel */
+}
+
+.btn-primary:disabled {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.3);
+    cursor: not-allowed;
 }
 
 .btn-icon {
   background: transparent;
   border: none;
-  color: var(--accent-purple);
+  color: var(--text-muted); /* Subtle default color */
   cursor: pointer;
   font-size: 1.2rem;
   padding: 8px;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: color 0.2s, background 0.2s;
 }
 .btn-icon:hover {
-  background: rgba(139, 92, 246, 0.2);
+  color: var(--accent-solid);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .msg-bubble {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.2s ease-out;
 }

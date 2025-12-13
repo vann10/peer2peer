@@ -10,6 +10,9 @@ export default function App() {
   const [socket, setSocket] = useState(null);
   const [userId, setUserId] = useState(null);
   const [isRegistering, setIsRegistering] = useState(false);
+  
+  // State baru untuk menangampung input username
+  const [usernameInput, setUsernameInput] = useState("");
 
   useEffect(() => {
     const s = io(SERVER_URL);
@@ -18,14 +21,21 @@ export default function App() {
   }, []);
 
   const login = async (id) => {
+    if (!id) return; // Cegah login kosong
+    const lowerId = id.toLowerCase(); // Standarisasi ke huruf kecil
+
     setIsRegistering(true);
     try {
-      const { pubJwk } = await ensureKeypair(id);
+      // 1. Cek atau buat keypair baru untuk ID ini
+      const { pubJwk } = await ensureKeypair(lowerId);
+      
+      // 2. Register ke server
       socket.emit("register", {
-        user_id: id,
+        user_id: lowerId,
         pubkey_jwk: pubJwk
       });
-      setUserId(id);
+      
+      setUserId(lowerId);
     } catch (e) {
       console.error("Login failed:", e);
       alert("Gagal membuat keypair atau login.");
@@ -36,6 +46,7 @@ export default function App() {
 
   if (!socket) return <div className="loading-screen">Connecting to server...</div>;
 
+  // TAMPILAN JIKA BELUM LOGIN
   if (!userId) {
     return (
       <div style={{ 
@@ -59,37 +70,39 @@ export default function App() {
           <div style={{ fontSize: "48px", marginBottom: "16px", filter: "drop-shadow(0 0 10px rgba(139,92,246,0.5))" }}>🔐</div>
           <h2 style={{ marginBottom: "8px", color: "white", fontWeight: "700", letterSpacing: "-0.5px" }}>Secure Chat</h2>
           <p style={{ color: "var(--text-muted)", marginBottom: "32px", fontSize: "14px" }}>
-            Pilih identitas enkripsi Anda untuk memulai.
+            Masukkan ID unik Anda untuk bergabung.
           </p>
           
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            
+            {/* INPUT FIELD BARU */}
+            <input 
+              className="input-glass"
+              style={{ textAlign: "center", fontSize: "16px", width: "100%" }}
+              placeholder="Username (ex: alice, bob)"
+              value={usernameInput}
+              onChange={(e) => setUsernameInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') login(usernameInput);
+              }}
+              autoFocus
+            />
+
             <button 
               className="btn-primary" 
-              onClick={() => login("alice")}
-              disabled={isRegistering}
+              onClick={() => login(usernameInput)}
+              disabled={isRegistering || !usernameInput.trim()}
               style={{ width: "100%", padding: "14px" }}
             >
-              {isRegistering ? "Generating Keys..." : "Login as Alice"}
+              {isRegistering ? "Generating Keys..." : "Join Secure Channel"}
             </button>
-            <button 
-              className="btn-primary" 
-              onClick={() => login("bob")}
-              disabled={isRegistering}
-              style={{ 
-                width: "100%", 
-                padding: "14px",
-                background: "transparent", 
-                border: "1px solid var(--accent-purple)",
-                color: "var(--accent-purple)"
-              }}
-            >
-              {isRegistering ? "Generating Keys..." : "Login as Bob"}
-            </button>
+            
           </div>
         </div>
       </div>
     );
   }
 
+  // TAMPILAN JIKA SUDAH LOGIN (Masuk ke Chat)
   return <Chat socket={socket} userId={userId} />;
 }
