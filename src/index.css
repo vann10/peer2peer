@@ -1,13 +1,112 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* src/index.css */
+:root {
+  /* Palette Black & Glassy Purple */
+  --bg-main: #000000;
+  --bg-glass: rgba(20, 20, 25, 0.6);
+  --bg-glass-heavy: rgba(10, 10, 12, 0.85);
+  
+  --accent-purple: #8b5cf6;
+  --accent-purple-glow: rgba(139, 92, 246, 0.5);
+  --accent-gradient: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  
+  --text-main: #ffffff;
+  --text-muted: #a1a1aa;
+  
+  --border-glass: 1px solid rgba(139, 92, 246, 0.2);
+  --border-active: 1px solid rgba(139, 92, 246, 0.6);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 40%);
+  color: var(--text-main);
+  
+  /* UBAH DI SINI: */
+  min-height: 100vh; /* Gunakan min-height agar bisa memanjang */
+  overflow-y: auto;  /* Izinkan scroll vertikal */
+  /* Hapus atau remark baris: height: 100vh; dan overflow: hidden; */
+}
+
+/* Scrollbar Custom */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-purple);
+}
+
+/* Utility Classes for Glassmorphism */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--border-glass);
+}
+
+.input-glass {
+  background: rgba(255, 255, 255, 0.05);
+  border: var(--border-glass);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  width: 100%;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.input-glass:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 15px var(--accent-purple-glow);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary {
+  background: var(--accent-gradient);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px var(--accent-purple-glow);
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  color: var(--accent-purple);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.btn-icon:hover {
+  background: rgba(139, 92, 246, 0.2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg-bubble {
+  animation: fadeIn 0.3s ease-out;
 }
