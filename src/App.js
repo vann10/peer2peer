@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MeshNetwork } from "./services/meshNetwork";
 import {
   LoginScreen,
@@ -18,7 +18,6 @@ export default function App() {
   const [peerStatus, setPeerStatus] = useState({});
   const [groups, setGroups] = useState({});
 
-  // Modal State
   const [modalConfig, setModalConfig] = useState({
     isOpen: false,
     type: "",
@@ -30,7 +29,7 @@ export default function App() {
 
   const meshRef = useRef(null);
 
-  // --- HANDLER: Network Events ---
+  // Handler Network Events
   const handleNetworkEvent = (event, data) => {
     switch (event) {
       case "status_update":
@@ -46,13 +45,13 @@ export default function App() {
             to: data.groupId || null,
             isGroup: !!data.groupId,
             isMe: false,
-            proof: data.proof, // Store encryption proof
+            proof: data.proof,
             showProof: false,
           },
         ]);
         break;
       case "contact_connected":
-        // Data yang dikirim adalah ID remoteUser (string)
+        // Kirim ID remoteUser (string)
         setContacts((prev) => (prev.includes(data) ? prev : [...prev, data]));
         break;
       case "group_invite":
@@ -93,7 +92,6 @@ export default function App() {
     const isGroup = !!groups[activeChat];
     const members = groups[activeChat] || [];
 
-    // Send and get proof back for UI
     const proof = await meshRef.current.sendMessage(
       activeChat,
       content,
@@ -110,7 +108,7 @@ export default function App() {
         text: content,
         isGroup: isGroup,
         isMe: true,
-        proof: proof, // Show my own proof
+        proof: proof, 
         showProof: false,
       },
     ]);
@@ -122,7 +120,6 @@ export default function App() {
     );
   };
 
-  // --- MODAL LOGIC ---
   const openAlert = (title, msg) => {
     setModalConfig({
       isOpen: true,
@@ -216,7 +213,7 @@ export default function App() {
                 className="input-glass"
                 value={groupNameInput}
                 onChange={(e) => setGroupNameInput(e.target.value)}
-                placeholder="e.g. study-group"
+                placeholder="e.g. elite global"
               />
             </div>
             <div>
@@ -227,13 +224,13 @@ export default function App() {
                   fontSize: "12px",
                 }}
               >
-                Members (Comma separated IDs)
+                Members (Pisahkan dengan koma)
               </label>
               <input
                 className="input-glass"
                 value={groupMembersInput}
                 onChange={(e) => setGroupMembersInput(e.target.value)}
-                placeholder="e.g. bob, alice"
+                placeholder="e.g. owi, owo"
               />
             </div>
           </div>

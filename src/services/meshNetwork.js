@@ -14,7 +14,7 @@ export class MeshNetwork {
     this.emitUI = onEvent; 
     this.setupSocketListeners();
     
-    // Heartbeat check setiap 5 detik
+    // Cek setiap 5 detik
     this.heartbeatInterval = setInterval(() => this.checkConnections(), 5000);
   }
 
@@ -31,22 +31,19 @@ export class MeshNetwork {
     });
   }
   
-  // FIX: Heartbeat yang lebih pintar mendeteksi koneksi macet (Stuck)
   checkConnections() {
     if (!this.userId) return; 
     
     this.trackedContacts.forEach(targetId => {
       const peer = this.peers[targetId];
       
-      // Jika peer belum ada sama sekali, buat baru
+      // Jika peer belum ada, buat baru
       if (!peer) {
           console.log(`Heartbeat: Connecting to ${targetId}...`);
           this.connectTo(targetId);
           return;
       }
 
-      // Deteksi Zombie Connection:
-      // Jika status masih 'new' atau 'checking' TAPI sudah lebih dari 10 detik, berarti macet.
       const isStuck = (Date.now() - peer.startTime > 10) && 
                       (peer.connectionState === 'new' || peer.connectionState === 'connecting' || peer.signalingState === 'have-local-offer');
 
@@ -58,7 +55,6 @@ export class MeshNetwork {
         delete this.peers[targetId];
         delete this.channels[targetId];
         
-        // Coba connect ulang
         this.connectTo(targetId);
       }
     });
@@ -77,7 +73,6 @@ export class MeshNetwork {
     
     const peer = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
     
-    // FIX: Tambahkan Timestamp saat pembuatan untuk deteksi timeout
     peer.startTime = Date.now();
     peer.candidateQueue = [];
 
@@ -99,7 +94,6 @@ export class MeshNetwork {
       console.log(`Connection state with ${targetId}: ${state}`);
       this.emitUI('status_update', { target: targetId, status: state });
       if (state === 'failed' || state === 'disconnected') {
-        // Jangan delete dari trackedContacts
         delete this.peers[targetId];
         delete this.channels[targetId];
       }
@@ -163,15 +157,13 @@ export class MeshNetwork {
 
     if (payload.type === 'offer') {
        if (peer && peer.signalingState === "have-local-offer") {
-          // Glare detected: Jika kita initiator tapi lawan juga kirim offer
-          // Reset timestamp kita agar tidak dianggap stuck dulu
           peer.startTime = Date.now(); 
           console.warn("Signal collision detected with", sender);
           return;
        }
        
        if (!peer) peer = this.createPeer(sender, false);
-       this.trackedContacts.add(sender); // Track pengirim offer
+       this.trackedContacts.add(sender); 
 
        if (peer.signalingState !== "stable" && peer.signalingState !== "have-remote-offer") {
           return;
@@ -213,14 +205,13 @@ export class MeshNetwork {
   connectTo(targetId) {
     this.trackedContacts.add(targetId);
 
-    // Cek jika peer sudah ada dan state-nya sehat, return
     if (this.peers[targetId] && ['connected', 'connecting'].includes(this.peers[targetId].connectionState)) {
         // Double check timestamp agar tidak return true pada koneksi zombie
         if (Date.now() - this.peers[targetId].startTime < 10000) return;
     }
     
     const peer = this.createPeer(targetId, true);
-    // Reset start time setiap kali initiate connection baru
+    // Reset start time setiap initiate connection baru
     peer.startTime = Date.now(); 
     
     peer.createOffer()
